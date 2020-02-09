@@ -1,7 +1,6 @@
 <!doctype html>
 <html lang="en">
 <head>
-
 	<!-- Webpage Title -->
 	<title>Hello, world!</title>
 
@@ -12,48 +11,59 @@
 	<!-- Bootstrap CSS -->
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-	<!-- JS -->		
+	<!-- JS -->
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
-	<link rel = "stylesheet" type = "text/css" href = "homework1-style.css">
+	<link rel="stylesheet" href="{{url_for('static', filename='homework1-style.css')}}">
 
 	<link href="https://fonts.googleapis.com/css?family=Nanum+Gothic&display=swap" rel="stylesheet">
-
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 
 	<script>
-		function q1(){
-			var input1 = $('#inputName').val();
-			var input2 = $('#inputCount').val();
-			var input3 = $('#inputAddress').val();
-			var input4 = $('#inputPhone').val();
+		function order() {
+        let name = $('#order_name').val();
+        let count = $('#order_count').val();
+        let address = $('#order_address').val();
+        let phone = $('#order_phone').val();
 
-			if( input1 == '' ){
-				alert('이름을 입력해주세요')
-				$('#inputName').focus()
-				return
-			} else if ( input2 == '' ){
-				alert('수량을 입력해주세요')
-				$('#inputCount').focus()
-				return
-			} else if ( input3 == ''){
-				alert('주소를 입력해주세요')
-				$('#inputAddress').focus()
-				return
-			} else if( input4 == ''){
-				alert('전화번호를 입력해주세요')
-				$('#inputPhone').focus()
-				return
-			} else {
-				alert('주문이 완료되었습니다')
-			}
-		}
+        if (name == ''){
+          alert('이름을 입력해주세요')
+          $('#order_name').focus()
+          return
+        } else if (count == ''){
+          alert('수량을 입력해주세요')
+          $('#order_count').focus()
+          return
+        } else if (address == ''){
+          alert('주소를 입력해주세요')
+          $('#order_address').focus()
+          return
+        } else if (phone == ''){
+          alert('휴대폰번호를 입력해주세요')
+          $('#order_phone').focus()
+          return
+        } else if (!isCellPhone(phone)) {
+          alert('휴대폰번호 입력 형식이 틀립니다. \n 010-0000-0000으로 입력해주세요')
+          return
+        }
+
+        $.ajax({
+          type: "POST",
+          url: "/order",
+          data: { name_give:name, count_give:count, address_give:address, phone_give:phone },
+          success: function(response){
+            if(response['result'] == 'success'){
+              alert('주문 완료!');
+              window.location.reload();
+            }
+          }
+        })
+      }
 	</script>
-
-
 </head>
+
 <div class="content">
 	<img src="https://kukka.kr/media/images/02-2_Flowers_seasonal/102_blueminidelphinium/1_1.png" class="content-img">
 	<div class="content-body">
@@ -77,21 +87,20 @@
 				<option value="3">3</option>
 			</select>
 		</div>
-		<div class="input-group mb-3">
-			<div class="input-group-prepend">
-				<span class="input-group-text" id="inputGroup-sizing-default">주소</span>
-			</div>
-			<input id="inputAddress" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+	</div>
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<span class="input-group-text" id="inputGroup-sizing-default">주소</span>
 		</div>
-		<div class="input-group mb-3">
-			<div class="input-group-prepend">
-				<span class="input-group-text" id="inputGroup-sizing-default">전화번호</span>
-			</div>
-			<input id="inputPhone" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+		<input id="inputAddress" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+	</div>
+	<div class="input-group mb-3">
+		<div class="input-group-prepend">
+			<span class="input-group-text" id="inputGroup-sizing-default">전화번호</span>
 		</div>
-		<button onclick="q1()" type="button" class="btn btn-primary">주문하기</button>
+		<input id="inputPhone" type="text" class="form-control" aria-label="Sizing example input" aria-describedby="inputGroup-sizing-default">
+	</div>
+	<button onclick="q1()" type="button" class="btn btn-primary">주문하기</button>
 
-
-
-	</body>
-	</html>
+</div>
+</html>
